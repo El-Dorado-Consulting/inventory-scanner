@@ -1,24 +1,18 @@
-import Airtable from 'airtable'
-import Moment from 'moment'
+import {base} from '$lib/data/airtable.js'
 
-const apiKey = 'keyyKoLrS4fQAkhML'
-const baseID = 'appaXW95iIHcAeyWW'
-
-Airtable.configure({
-  endpointUrl: 'https://api.airtable.com',
-  apiKey: apiKey
-})
-
-const base = Airtable.base(baseID);
-
-export async function get () {
-  let data = await getInventory()
-  console.log('DATA', data)
+export async function post (request) {
+  const data = JSON.parse(request.body)
+  const {airtableID, quanity} = data
+  console.log(data)
+  let newRecord = await updateConsumptionQuanitity(airtableID, quanity)
     return {
-      body: data
+      body: {newRecord}
     }
 }
-async function getInventory () {
+
+
+
+async function updateConsumptionQuanitity () {
   let array = []
   try {
     const records = await base('Supermarket').select({ view:'scanner' }).all()
