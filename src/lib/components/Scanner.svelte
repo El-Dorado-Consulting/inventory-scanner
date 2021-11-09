@@ -55,7 +55,5 @@ function checkID (scan) {
   }
 }
 
-
-
 </script>
 

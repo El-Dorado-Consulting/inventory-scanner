@@ -5,6 +5,14 @@
   $: description = "fuck";
   $: quantity = 1;
   $: imgURL = assets + "no-image.png";
+
+  async function updateQuantity () {
+    console.log(quantity, ' was submitted')
+
+  }
+
+
+
 </script>
 
 <div class="mt-4 flex">
@@ -17,7 +25,7 @@
       </tr>
       <td class="col-short">Quantity:</td>
       <td>
-        <form id="scan-quantity">
+        <form on:submit|preventDefault={updateQuantity}>
           <input
             class="shadow p-2 text-center"
             type="text"

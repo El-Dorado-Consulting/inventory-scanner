@@ -1,4 +1,4 @@
-<script context="module">
+<!-- <script context="module">
   export async function load ({fetch}) {
     const res = await fetch("/api/getInventory")
     const data = await res.json()
@@ -8,7 +8,7 @@
       }
     }
   }
-</script>
+</script> -->
 
 
 <script>
@@ -17,7 +17,11 @@
   import ScanOut from "$lib/components/Scan-out.svelte"
 
   export let data
-  $inventoryLibrary = data
+  // $:inventoryLibrary = data
+  
+  // $scanValue
+  // $: console.log('Scan value:', scanValue)
+
 </script>
 
 

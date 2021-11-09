@@ -1,34 +1,37 @@
-import {base} from '$lib/data/airtable.js'
+import { base } from '$lib/data/airtable.js'
 
-export async function post (request) {
+export async function post(request) {
   const data = JSON.parse(request.body)
-  const {airtableID, quanity} = data
+  const { airtableID, quanity } = data
   console.log(data)
   let newRecord = await updateConsumptionQuanitity(airtableID, quanity)
-    return {
-      body: {newRecord}
-    }
-}
-
-
-
-async function updateConsumptionQuanitity () {
-  let array = []
-  try {
-    const records = await base('Supermarket').select({ view:'scanner' }).all()
-    records.map((record) => {
-      array.push({
-        airtableID:record.id,
-        partID:record.get("Product ID"),
-        description:record.get("Description"),
-        image: record.fields.Images !== undefined ? record.fields.Images[0].thumbnails.large.url : undefined
-      });
-    })
-  } catch (e) {
-    console.error(e)
+  return {
+    body: { newRecord }
   }
-  return array
 }
+
+async function updateConsumptionQuanitity() {
+  const res = await base('Consuming').update([
+    {
+      "id": LAST_PART_ID,
+      "fields": {
+        "Quantity": parseInt(quant)
+      }
+    }
+  ], function (err, records) {
+    if (err) {
+      alert('failed to update quantity')
+      console.error(err);
+      return;
+    }
+    records.forEach(function (record) {
+      let cell = document.getElementById('log-table').rows[1].cells[2]
+      cell.textContent = quant
+      console.log("Quantity updated")
+    })
+  })
+}
+
 
 
 
