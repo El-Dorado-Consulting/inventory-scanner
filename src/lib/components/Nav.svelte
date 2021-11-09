@@ -12,16 +12,16 @@
     <div class= " max-h-full">
       <img class= "max-h-16 px-8" src={logo} alt="">
     </div>
-    <h2 class="text-2xl">Inventory Scanner</h2>
+    <h2 class="text-xl">Inventory Scanner</h2>
   </div>
-  <h2 class="flex-1 text-center text-3xl"><Clock/></h2>
-  <h2 class="flex-1 text-right text-3xl pr-20">{city}</h2>
+  <h2 class="flex-1 text-center text-xl"><Clock/></h2>
+  <h2 class="flex-1 text-right text-xl pr-20">{city}</h2>
 </header>
-<nav>
-    <ul class="nav">
-        <li><button id="but-lookup">Look up</button></li>
+<nav class = "bg-green-100 text-xl">
+    <ul class="flex">
+        <li><button class="p-4 hover:bg-green-200">Look up</button></li>
         <!-- <li><button id="but-checkin">Scan in</button></li> -->
-        <li><button id="but-checkout">Scan out</button></li>
+        <li><button class="p-4 hover:bg-green-200">Scan out</button></li>
         <!-- <li><button id="but-cycle-count">Cycle count</button></li> -->
         <form></form>
     </ul>

@@ -1,5 +1,4 @@
 <script context="module">
-
   export async function load ({fetch}) {
     const res = await fetch("/api/getInventory")
     const data = await res.json()
@@ -13,15 +12,18 @@
 
 
 <script>
-  //import Scanner from '$lib/components/Scanner.svelte'
+  import { scanValue, inventoryLibrary } from "$lib/data/stores.js"
+  import Scanner from '$lib/components/Scanner.svelte'
   import ScanOut from "$lib/components/Scan-out.svelte"
-  import InputForm from "$lib/components/InputForm.svelte"
 
   export let data
-
+  $inventoryLibrary = data
 </script>
 
+
+<Scanner />
 <ScanOut />
-<InputForm {data}/>
-<p></p>
+
+
+
  

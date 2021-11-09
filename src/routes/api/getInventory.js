@@ -1,8 +1,8 @@
 import {base} from '$lib/data/airtable.js'
 
+
 export async function get () {
   let data = await getInventory()
-  console.log('DATA', data)
     return {
       body: data
     }
