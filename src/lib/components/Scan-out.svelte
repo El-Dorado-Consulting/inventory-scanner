@@ -1,16 +1,37 @@
 <script>
-  import { lastItem, logs } from "$lib/data/stores.js";
 
+  import { logs, lastRecordID } from '$lib/data/stores.js'
   import { assets } from "$app/paths";
-  $: description = "fuck";
+
+  export let itemData = {}
+
   $: quantity = 1;
-  $: imgURL = assets + "no-image.png";
+  let imgURL = assets + "no-image.png";
 
   async function updateQuantity () {
-    console.log(quantity, ' was submitted')
+    const submit = await fetch("/api/updateQuantity", {
+      method: "POST",
+      body: JSON.stringify({
+        id: $lastRecordID,
+        quantity: quantity
+      })
+    })
+    const data = await submit.json()
+    logs.update(logs => {
+      let lastRecord = logs[0]
+      logs.shift()
+      logs.unshift({
+        time:lastRecord.time, 
+        description:lastRecord.description,
+        quantity
+      })
+      return logs
+    })
+    //reset view
+    quantity = 1
+    itemData.description = ''
 
   }
-
 
 
 </script>
@@ -21,7 +42,7 @@
     <table>
       <tr>
         <td class="py-4">Description:</td>
-        <td id="scan-description">{$lastItem.description}</td>
+        <td id="scan-description">{itemData.description}</td>
       </tr>
       <td class="col-short">Quantity:</td>
       <td>
@@ -36,7 +57,7 @@
     </table>
     <br />
     <div class="h-56 flex ">
-      <img class="m-auto align-middle" src={$lastItem.image} alt="" />
+      <img class="m-auto align-middle" src={itemData.image} alt="" />
     </div>
   </section>
   <section class="flex-1 border-l-4 px-4">
@@ -60,6 +81,7 @@
     </table>
   </section>
 </div>
+{$lastRecordID}
 
 <style>
   th {

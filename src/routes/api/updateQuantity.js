@@ -1,21 +1,21 @@
 import { base } from '$lib/data/airtable.js'
 
 export async function post(request) {
+  console.log('hello')
   const data = JSON.parse(request.body)
-  const { airtableID, quanity } = data
-  console.log(data)
-  let newRecord = await updateConsumptionQuanitity(airtableID, quanity)
+  const {id, quantity} = data
+  let newRecord = await updateConsumptionQuanitity(id, quantity)
   return {
     body: { newRecord }
   }
 }
 
-async function updateConsumptionQuanitity() {
+async function updateConsumptionQuanitity(id, quanity) {
   const res = await base('Consuming').update([
     {
-      "id": LAST_PART_ID,
+      "id": id,
       "fields": {
-        "Quantity": parseInt(quant)
+        "Quantity": parseInt(quanity)
       }
     }
   ], function (err, records) {
@@ -25,9 +25,8 @@ async function updateConsumptionQuanitity() {
       return;
     }
     records.forEach(function (record) {
-      let cell = document.getElementById('log-table').rows[1].cells[2]
-      cell.textContent = quant
-      console.log("Quantity updated")
+      return record
+
     })
   })
 }
