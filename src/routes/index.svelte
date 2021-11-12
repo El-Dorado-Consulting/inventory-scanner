@@ -16,11 +16,15 @@
 
   import Scanner from '$lib/components/Scanner.svelte'
   import ScanOut from "$lib/components/Scan-out.svelte"
+  
+  import { assets } from "$app/paths";
+
 
   export let inventoryList
   let lastScan = ''
   let itemData = {
-    description:''
+    description:'',
+    image: 'https://blog.greendot.org/wp-content/uploads/sites/13/2021/09/placeholder-image.png'
   }
   
 
@@ -59,9 +63,8 @@
       return currentList})
   }
 
-
 </script>
-<p>{lastScan}</p>
+
 <Scanner on:message={handleScan} />
 <ScanOut {itemData} />
 
