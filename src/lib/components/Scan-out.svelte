@@ -1,5 +1,5 @@
 <script>
-  import { logs, lastRecordID, lastItem } from "$lib/data/stores.js";
+  import { logs, lastRecordID, currentItem } from "$lib/data/stores.js";
 
   export let itemData = {};
 

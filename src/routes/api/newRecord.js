@@ -1,27 +1,24 @@
 
 import { base } from '$lib/data/airtable.js'
-
+import { Table } from 'airtable'
 
 export async function post(request) {
   const data = JSON.parse(request.body)
-  const { airtableID, description } = data
-  console.log(data)
-  let newRecord = await consumePart(airtableID, description)
-  console.log('newRecord', newRecord)
+  let newRecord = await createConsumptionRecord(data)
   return {
     body: { newRecord }
   }
 }
 
-
-async function consumePart(id, description) {
+async function createConsumptionRecord(data) {
+  const {table, record} = data
   return new Promise((resolve, reject) => {
-    base('Consuming').create([
+    base(table).create([
       {
         "fields": {
-          "Description": description,
+          "Description": record.description,
           "Quantity": 1,
-          "Supermarket": [id]
+          "Supermarket": [record.airtableID]
         }
       }
     ], function (err, records) {
@@ -31,13 +28,7 @@ async function consumePart(id, description) {
       }
       records.forEach(function (record) {
         resolve(record.getId())
-
       });
     });
   })
 }
-
-
-console.log('consume part called')
-//Push to Airtable
-

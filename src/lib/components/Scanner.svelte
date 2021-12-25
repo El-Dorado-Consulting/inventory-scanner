@@ -1,13 +1,32 @@
 <script>
   import { onMount } from "svelte";
-  import { createEventDispatcher } from "svelte";
+  import { inventoryLibrary, currentItem } from "$lib/data/stores.js";
 
-  const dispatch = createEventDispatcher();
-  
-  function scanEvent(string) {
-    dispatch("message", {
-      string
-    });
+  function handleScan(string) {
+    const inventoryLookup = $inventoryLibrary.find((x) => x.partID === string);
+
+    //Check if record is recognised
+    if (inventoryLookup === undefined) {
+      alert(`${string} was not found`);
+      return;
+    }
+
+    //Check if record is the same as previous
+    console.log('poop',$currentItem.partID, string)
+    console.log($currentItem)
+    if ($currentItem.partID === string) {
+      console.log('case 1')
+      currentItem.update(item => {
+        item.quantity = item.quantity + 1
+        return item
+      })
+      console.log($currentItem)
+    }
+    // Otherwise update current item with new item
+    else {
+      console.log('case 2')
+      currentItem.update(item => {return inventoryLookup});
+    }
   }
 
   onMount(() => {
@@ -23,6 +42,7 @@
     document.addEventListener("keydown", function (e) {
       let thisChar = filterChar(e.key);
       buffer.push(thisChar);
+
       //Characters entered within 25ms are from barcode scanner
       now = new Date().getTime();
       if (now - then <= 25) {
@@ -35,7 +55,7 @@
           let finalString = barcodeArray.join("");
           barcodeArray = [];
           buffer = [];
-          scanEvent(finalString)
+          handleScan(finalString);
         }
       }
       then = now;
