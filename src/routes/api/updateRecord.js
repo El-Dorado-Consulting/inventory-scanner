@@ -10,11 +10,11 @@ export async function post(request) {
 }
 
 async function updateQuanity(data) {
-  const {table, id, record} = data
+  const {table, recordId, record} = data
   return new Promise((resolve, reject) => {
     base(table).update([
       {
-        "id": id,
+        "id": recordId,
         "fields": record
       }
     ], function (err, records) {

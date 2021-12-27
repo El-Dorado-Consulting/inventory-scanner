@@ -4,29 +4,30 @@
 
   function handleScan(string) {
     const inventoryLookup = $inventoryLibrary.find((x) => x.partID === string);
-
+    
     //Check if record is recognised
     if (inventoryLookup === undefined) {
       alert(`${string} was not found`);
       return;
     }
-
+    
     //Check if record is the same as previous
-    console.log('poop',$currentItem.partID, string)
-    console.log($currentItem)
-    if ($currentItem.partID === string) {
-      console.log('case 1')
-      currentItem.update(item => {
-        item.quantity = item.quantity + 1
-        return item
-      })
-      console.log($currentItem)
-    }
+    // if ($currentItem.partID === string) {
+    //   console.log('Scanner - Update Quantity')
+    //   currentItem.update(item => {
+    //     item.quantity = item.quantity + 1
+    //     return item
+    //   })
+    // }
+    
     // Otherwise update current item with new item
-    else {
-      console.log('case 2')
-      currentItem.update(item => {return inventoryLookup});
-    }
+    // else {
+      console.log('Scanner - Update Item')
+      currentItem.update(item => {
+        item = inventoryLookup
+        return item
+      });
+    // }
   }
 
   onMount(() => {

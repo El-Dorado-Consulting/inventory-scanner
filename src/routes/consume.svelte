@@ -14,7 +14,7 @@
       quantity: 1,
     };
     logs.update((logs) => {
-      logs.push(log);
+      logs.unshift(log);
       return logs;
     });
   }
@@ -47,15 +47,15 @@
     }
   }
 
-  async function updateQuantity(item) {
+  async function updateQuantity(item, recordId) {
     const record = {Quantity: item.quantity}
-    const id = $lastAirtableRecord
+    console.log('cock',recordId, record)
     const submit = await fetch("/api/updateRecord", {
       method: "POST",
-      body: JSON.stringify({table:'Consuming', id, record}),
+      body: JSON.stringify({table:'Consuming', recordId, record}),
     });
     const data = await submit.json();
-    console.log(data.newRecord);
+    console.log('Last record Updated ', data.newRecord);
     if (typeof data.newRecord === "string") {
       lastAirtableRecord.update( item => {
         return data.newRecord;
@@ -65,11 +65,14 @@
   }
 
   function handleUpdate (item) {
-    if (item.quantity > 1) {
-      updateQuantity(item)
-    } else {
+    // if (item.quantity > 1) {
+    //   console.log('handle quant')
+    //   let recordId = $lastAirtableRecord
+    //   updateQuantity(item, recordId)
+    // } else {
+      console.log('handle consume')
       consumeItem(item)
-    }
+    // }
   }
 
   // Consume only when currentItem changes
@@ -82,5 +85,6 @@
 <div class="flex my-6">
   <Form />
   <Log />
-
 </div>
+{$lastAirtableRecord}
+{JSON.stringify($currentItem)}
