@@ -1,33 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import { inventoryLibrary, currentItem } from "$lib/data/stores.js";
+  import { scanString, lastScan } from "$lib/data/stores.js";
 
   function handleScan(string) {
-    const inventoryLookup = $inventoryLibrary.find((x) => x.partID === string);
-    
-    //Check if record is recognised
-    if (inventoryLookup === undefined) {
-      alert(`${string} was not found`);
-      return;
-    }
-    
-    //Check if record is the same as previous
-    // if ($currentItem.partID === string) {
-    //   console.log('Scanner - Update Quantity')
-    //   currentItem.update(item => {
-    //     item.quantity = item.quantity + 1
-    //     return item
-    //   })
-    // }
-    
-    // Otherwise update current item with new item
-    // else {
-      console.log('Scanner - Update Item')
-      currentItem.update(item => {
-        item = inventoryLookup
-        return item
-      });
-    // }
+    scanString.set(string)
+    lastScan.set(Date.now())
   }
 
   onMount(() => {
