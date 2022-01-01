@@ -5,6 +5,7 @@
     currentItem,
     lastAirtableRecord,
     inventoryLibrary,
+    allowInput,
     logs,
   } from "$lib/data/stores.js";
 
@@ -53,6 +54,7 @@
         return data.newRecord;
       });
       updateLog(item)
+      $allowInput = false
     }
   }
 
@@ -60,6 +62,7 @@
     console.log("Update quanity called");
     const record = { Quantity: item.quantity };
     const recordId = $lastAirtableRecord;
+    console.log(record, recordId)
     const submit = await fetch("/api/updateRecord", {
       method: "POST",
       body: JSON.stringify({ table: "Consuming", recordId, record }),
@@ -93,7 +96,7 @@
     if (item.quantity > 1) {
       updateQuantity(item);
       return;
-    } else {
+    } else if (item.description !== '') {
       consumeItem(item);
       return;
     }
@@ -105,7 +108,7 @@
 
 <Scanner />
 <div class="flex my-6">
-  <Form item={$currentItem} />
-  <Log />
+  <Form item={$currentItem} on:message={updateQuantity($currentItem)} />
+  <Log logType="Consuming" />
 </div>
 

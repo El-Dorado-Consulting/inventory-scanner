@@ -1,8 +1,7 @@
 <script>
   import { logs } from '$lib/data/stores.js'
-
+  export let logType = ''
   const clearLog = () => {
-    
   }
 
 </script>
@@ -11,7 +10,7 @@
 <section class="flex-1 border-l-4 px-4">
   <div class="mx-4">
     <div class="flex justify-between">
-      <h4 class="text-2xl font-bold">Consumption Log</h4>
+      <h4 class="text-2xl font-bold">{logType} Log</h4>
       <button on:click={clearLog} class="text-blue-500 hover:text-blue-700">Clear Log</button>
     </div>
     <table class="table-auto w-full mt-8">
