@@ -1,10 +1,18 @@
 <script>
   import { onMount } from "svelte";
-  import { scanString, lastScan } from "$lib/data/stores.js";
-
-  function handleScan(string) {
-    scanString.set(string)
-    lastScan.set(Date.now())
+  import { scanEvent, inventoryLibrary } from "$lib/data/stores.js";
+  
+  function handleScan(newString, previousString) {
+    const notFound =  $inventoryLibrary.find((il) => il.partID === newString).length < 1
+    console.log(notFound)
+    let type = 'new'
+    if (notFound === true) type ='notFound'
+    if (newString === previousString) type = 'repeat'
+    scanEvent.set({
+      string: newString, 
+      previousString:previousString,
+      type,
+      timestamp:Date.now()})
   }
 
   onMount(() => {
@@ -33,7 +41,7 @@
           let finalString = barcodeArray.join("");
           barcodeArray = [];
           buffer = [];
-          handleScan(finalString);
+          handleScan(finalString, $scanEvent.string);
         }
       }
       then = now;

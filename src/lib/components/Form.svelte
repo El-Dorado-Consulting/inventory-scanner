@@ -1,8 +1,10 @@
 <script>
-  import {currentItem} from "$lib/data/stores.js";
-  const updateQuantity = () => {
-  }
 
+  export let item = {
+    description:'',
+    quanity:'',
+    image:'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg'
+  }
 </script>
 
   <section class="flex-1 px-4">
@@ -14,22 +16,22 @@
             class="shadow appearance-none border rounded w-full p-3 focus:outline-none focus:shadow-outline text-center text-lg font-bold"
             id="description"
             type="text"
-            value={$currentItem.description}
+            value={item.description}
             disabled
           />
         </div>
-        <form on:submit|preventDefault={updateQuantity} class="mb-6">
+        <form class="mb-6">
           <label class="mb-2" for="quantity"> Quantity </label>
           <input
             class="shadow appearance-none border rounded w-full text-center p-3 mb-3 leading-tight focus:outline-none focus:shadow-outline text-xl font-bold"
             id="quanity"
             type="text"
             disabled
-            bind:value={$currentItem.quantity} 
+            bind:value={item.quantity} 
           />
         </form>
         <div class="h-56 w-56 mx-auto flex my-8">
-          <img class="m-auto align-middle" src={$currentItem.image} alt="" />
+          <img class="m-auto align-middle" src={item.image} alt="" />
         </div>
     </div>
   </section>
