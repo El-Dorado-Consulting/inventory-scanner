@@ -1,33 +1,29 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { allowInput } from "$lib/data/stores.js";
 
-  $: disabled = $allowInput
-
-
+  const dispatch = createEventDispatcher();
+ 
+  export let disabled = false
+  export let title = 'Scan'
+  export let count = ''
+  export let quantity
   export let item = {
-    description:'',
-    quanity:'',
-    image:'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg'
   }
 
-
-const dispatch = createEventDispatcher();
-
 function updateQuantity() {
-  
-  $allowInput = true
-  dispatch('message', {text:'submit'});
+  dispatch('message', {quantity});
 }
-
 
 </script>
 
   <section class="flex-1 px-4">
     <div class="mx-4">
-      <h4 class="text-2xl font-bold mb-8">Scan</h4>
+      <div class="flex justify-between">
+        <h4 class="text-2xl font-bold mb-8">{title}</h4>
+        <h4 class="text-2xl mb-8">{count}</h4>
+      </div>
         <div class="mb-4">
-          <label class="block mb-2" for="description"> Description </label>
+          <label class="block mb-2" for="description"> Name </label>
           <input
             class="shadow appearance-none border rounded w-full p-3 focus:outline-none focus:shadow-outline text-center text-lg font-bold"
             id="description"
@@ -40,9 +36,9 @@ function updateQuantity() {
           <label class="mb-2" for="quantity"> Quantity </label>
           <input
             class="shadow appearance-none border rounded w-full text-center p-3 mb-3 leading-tight focus:outline-none focus:shadow-outline text-xl font-bold"
-            id="quanity"
+            id="quantity"
             type="number"
-            bind:value={item.quantity} 
+            bind:value={quantity} 
             {disabled}
           />
         </form>

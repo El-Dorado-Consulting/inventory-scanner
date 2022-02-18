@@ -1,18 +1,13 @@
 <script>
-  import { onMount } from "svelte";
-  import { scanEvent, inventoryLibrary } from "$lib/data/stores.js";
-  
-  function handleScan(newString, previousString) {
-    const notFound =  $inventoryLibrary.find((il) => il.partID === newString).length < 1
-    console.log(notFound)
-    let type = 'new'
-    if (notFound === true) type ='notFound'
-    if (newString === previousString) type = 'repeat'
-    scanEvent.set({
-      string: newString, 
-      previousString:previousString,
-      type,
-      timestamp:Date.now()})
+  import { onMount, createEventDispatcher } from "svelte";
+  import { inventoryLibrary } from "$lib/data/stores.js";
+
+  const dispatch = createEventDispatcher();
+
+  function handleScan(scanString) {
+    const record = $inventoryLibrary.find((il) => il.partId === scanString)
+    if (!record) return alert("This scan was not recognized");
+    return dispatch("message", {record});
   }
 
   onMount(() => {
@@ -38,10 +33,10 @@
         barcodeArray.push(thisChar);
         if (thisChar == "Enter") {
           barcodeArray.pop(); //get rid of "enter"
-          let finalString = barcodeArray.join("");
+          let completeString = barcodeArray.join("");
           barcodeArray = [];
           buffer = [];
-          handleScan(finalString, $scanEvent.string);
+          handleScan(completeString);
         }
       }
       then = now;

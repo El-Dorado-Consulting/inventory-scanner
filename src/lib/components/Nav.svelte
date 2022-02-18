@@ -1,10 +1,16 @@
 <script>
   import { assets } from "$app/paths";
-  import { goto } from "$app/navigation";
+  import { page } from '$app/stores';
   import config from "../../scannerConfig.json";
   import Clock from "$lib/components/Clock.svelte";
 
   const { city, logo } = config;
+
+  function isActive(path, currentPage){
+    if (path === currentPage) {
+      return true
+    }
+  }
 </script>
 
 <header
@@ -20,8 +26,30 @@
   <h2 class="text-right pr-20 mt-auto capitalize">{city}</h2>
 </header>
 <nav class="bg-gray-400 mt-1 flex text-xl">
-  <a href="lookup" class="p-3 px-20 hover:bg-yellow-400">Lookup</a>
-  <a href="consume" class="p-3 px-20 hover:bg-yellow-400">Consume</a>
-  <a href="receive" class="p-3 px-20 hover:bg-yellow-400">Receive</a>
-  <a href="count" class="p-3 px-20 hover:bg-yellow-400">Count</a>
+  <a
+    href="lookup"
+    class="p-3 px-20 hover:bg-yellow-400"
+    id={isActive($page.url.pathname, "/lookup") ? "selected" : ""}>Lookup</a
+  >
+  <a
+    href="consume"
+    class="p-3 px-20 hover:bg-yellow-400"
+    id={isActive($page.url.pathname, "/consume") ? "selected" : ""}>Consume</a
+  >
+  <a
+    href="receive"
+    class="p-3 px-20 hover:bg-yellow-400"
+    id={isActive($page.url.pathname, "/receive") ? "selected" : ""}>Receive</a
+  >
+  <a
+    href="count"
+    class="p-3 px-20 hover:bg-yellow-400"
+    id={isActive($page.url.pathname, "/count") ? "selected" : ""}>Count</a
+  >
 </nav>
+
+<style>
+  #selected {
+    background: rgba(251, 191, 36);
+  }
+</style>

@@ -1,114 +1,68 @@
 <script>
-  import moment from "moment";
-  import {
-    scanEvent,
-    currentItem,
-    lastAirtableRecord,
-    inventoryLibrary,
-    allowInput,
-    logs,
-  } from "$lib/data/stores.js";
+  import { receiving_log } from "$lib/data/stores.js";
+  import { newRecord, updateRecord } from "$lib/helpers/fetchHelper.svelte";
+  import { newLog, updateLog } from "$lib/helpers/logHelpers.svelte"
 
   import Scanner from "$lib/components/Scanner.svelte";
   import Form from "$lib/components/Form.svelte";
   import Log from "$lib/components/Log.svelte";
 
-  function updateLog(item) {
-    const time = moment().format("H:mm:ss");
-    console.log('quant', item.quantity)
-    if (item.quantity > 1) {
-      console.log('log quant update', )
-      logs.update((logs) => {
-        logs.shift();
-        logs.unshift({
-          time,
-          description: item.description,
-          quantity: item.quantity,
-        });
-        return logs;
-      });
-    } else {
-      let log = {
-        time,
-        description: item.description,
-        quantity: 1,
-      };
-      logs.update((logs) => {
-        logs.unshift(log);
-        return logs;
-      });
-    }
-  }
+  let lastRecord = {
+    partId: '',
+    description: "",
+    image:
+      "https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg",
+  };
+  let lastAirtableId = "";
+  let quantity = 1;
+  let disabled = false
 
-  async function consumeItem(item) {
-    console.log("Consume item called");
-    const record = item;
-    const submit = await fetch("/api/newRecord", {
-      method: "POST",
-      body: JSON.stringify({ table: "Receiving", record }),
+  async function newScan(record) {
+    const {description, airtableId} = record
+    const data = await newRecord("Receiving", {
+      Description: description,
+      Supermarket: [airtableId],
+      Quantity: 1,
     });
-    const data = await submit.json();
-    console.log(data.newRecord);
-    if (typeof data.newRecord === "string") {
-      lastAirtableRecord.update((item) => {
-        return data.newRecord;
-      });
-      updateLog(item)
-      $allowInput = false
-    }
+    receiving_log.set(newLog($receiving_log, description))
+    lastRecord = record;
+    quantity = 1;
+    disabled = false
+    return (lastAirtableId = data.recordId);
   }
 
-  async function updateQuantity(item) {
-    console.log("Update quanity called");
-    const record = { Quantity: item.quantity };
-    const recordId = $lastAirtableRecord;
-    console.log(record, recordId)
-    const submit = await fetch("/api/updateRecord", {
-      method: "POST",
-      body: JSON.stringify({ table: "Receiving", recordId, record }),
+  async function repeatScan() {
+    quantity++;
+    const data = await updateRecord("Receiving", lastAirtableId, {
+      Quantity: quantity,
     });
-    const data = await submit.json();
-    console.log("Last record Updated ", data.newRecord);
-    if (typeof data.newRecord === "string") {
-      lastAirtableRecord.update((item) => {
-        return data.newRecord;
-      });
-      updateLog(item)
-    }
+    receiving_log.set(updateLog($receiving_log, quantity))
+    disabled = false
+  return;
   }
 
-  function updateCurrentItem(event) {
-    console.log("Type: ", event.type);
-    if (event.type === "new") {
-      let item = $inventoryLibrary.filter(
-        (il) => il.partID === event.string
-      )[0];
-      currentItem.set({ ...item });
-    }
-    if (event.type === "repeat") {
-      console.log("b");
-      $currentItem.quantity += 1;
-    }
+  async function manualQuantity(e) {
+    quantity = e.detail.quantity
+    console.log(lastAirtableId, quantity)
+    const data = await updateRecord("Receiving", lastAirtableId, {
+      Quantity: quantity,
+    });
+    receiving_log.set(updateLog($receiving_log, quantity))
+    disabled = true
+    return;
   }
 
-  function handleUpdate(item) {
-    if (Object.keys(item).length === 0) return;
-    if (item.quantity > 1) {
-      updateQuantity(item);
-      return;
-    } else if (item.description !== '') {
-      consumeItem(item);
-      return;
-    }
+  function handleMessage(e) {
+    const record = e.detail.record;
+    if (record.partId === lastRecord.partId) return repeatScan(record)
+    else return newScan(record)
   }
 
-  $: updateCurrentItem($scanEvent);
-  $: handleUpdate($currentItem);
 </script>
 
-<Scanner />
+<Scanner on:message={handleMessage} />
 <div class="flex my-6">
-  <Form item={$currentItem} on:message={updateQuantity($currentItem)} />
-  <Log logType='Receiving' />
+  <Form title={"Receive Item"} item={lastRecord} {quantity} {disabled} on:message={manualQuantity} />
+  <Log logs={$receiving_log} />
 </div>
 

@@ -4,8 +4,11 @@
   export async function load ({fetch}) {
     const res = await fetch("/api/getInventory")
     const inventoryList = await res.json()
+    const res2 = await fetch("/api/getConfig")
+    const configList = await res2.json()
     return {
       props:{
+        configList,
         inventoryList
       }
     }
@@ -13,13 +16,16 @@
 </script>
 
 <script>
-  import {inventoryLibrary } from "$lib/data/stores.js";
+  import {inventoryLibrary, config } from "$lib/data/stores.js";
   import "../app.css";
   import Nav from "$lib/components/Nav.svelte";
   
   //Load inventory into store
   export let inventoryList
+  export let configList
   inventoryLibrary.update(n => {return inventoryList})
+  config.update(n => {return configList})
+
 
 
 </script>

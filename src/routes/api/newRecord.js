@@ -1,27 +1,19 @@
 
 import { base } from '$lib/data/airtable.js'
-import { Table } from 'airtable'
 
-export async function post(request) {
-  const data = JSON.parse(request.body)
-  let newRecord = await createConsumptionRecord(data)
+export async function post({ request }) {
+  let data = await request.json()
+  let recordId = await newAirtableRecord(data)
   return {
-    body: { newRecord }
+    body: { recordId }
   }
 }
 
-async function createConsumptionRecord(data) {
-  const {table, record} = data
+async function newAirtableRecord(data) {
+  console.log(data)
+  const { table, fields } = data
   return new Promise((resolve, reject) => {
-    base(table).create([
-      {
-        "fields": {
-          "Description": record.description,
-          "Quantity": 1,
-          "Supermarket": [record.airtableID]
-        }
-      }
-    ], function (err, records) {
+    base(table).create([{ fields }], function (err, records) {
       if (err) {
         console.error(err);
         reject(err);

@@ -1,21 +1,21 @@
 import { base } from '$lib/data/airtable.js'
 
-export async function post(request) {
-  console.log('update record')
-  const data = JSON.parse(request.body)
-  let newRecord = await updateQuanity(data)
+export async function post({request}) {
+  const data = await request.json()
+  let newRecord = await updateAirtableRecord(data)
   return {
     body: { newRecord }
   }
 }
 
-async function updateQuanity(data) {
-  const {table, recordId, record} = data
+async function updateAirtableRecord(data) {
+  const {table, id, fields} = data
+  console.log(table, id, fields)
   return new Promise((resolve, reject) => {
     base(table).update([
       {
-        "id": recordId,
-        "fields": record
+        "id": id,
+        "fields": fields
       }
     ], function (err, records) {
       if (err) {

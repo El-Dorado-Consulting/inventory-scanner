@@ -1,31 +1,26 @@
-import {base} from '$lib/data/airtable.js'
+import { base } from '$lib/data/airtable.js'
 
-export async function get () {
-  let data = await getInventory()
-    return {
-      body: data
-    }
-}
-  
-async function getInventory () {
-  console.log('Get inventory called')
+export async function get() {
   let array = []
   try {
-    const records = await base('Supermarket').select({ view:'scanner' }).all()
+    const records = await base('Supermarket').select({ view: 'default' }).all()
     records.map((record) => {
       array.push({
-        airtableID:record.id,
-        partID:record.get("Product ID"),
-        description:record.get("Description"),
-        image: record.fields.Images !== undefined ? record.fields.Images[0].thumbnails.large.url : undefined,
-        quantity: 1
+        airtableId: record.id,
+        partId: record.get("Product ID"),
+        description: record.get("Description"),
+        image: record.fields.Images ? record.fields.Images[0].thumbnails.large.url : undefined,
+        category: record.get("Counting Category"),
+        lastCounted: record.get("Last Counted")
       });
     })
+    //console.table(array)
+    return {
+      body: array
+    }
   } catch (e) {
     console.error(e)
   }
-  return array  
 }
-
 
 

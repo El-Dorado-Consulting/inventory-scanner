@@ -1,15 +1,9 @@
-import { writable, derived } from "svelte/store";
+import { writable } from "svelte/store";
 
-
+export const config = writable([])
 export const inventoryLibrary = writable([])
-export const scanEvent = writable({string:'', previousString:'', type:'', timestamp:''})
-// Derived Stores
-export const currentItem = writable({
-  description:'',
-  quanity:'',
-  image:'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg'
-})
 
-export const allowInput = writable(false)
-export const lastAirtableRecord = writable('')
-export const logs = writable([])
+export const consuming_log = writable([])
+export const receiving_log = writable([])
+export const counting_log = writable([])
+
