@@ -9,7 +9,7 @@
 
   let i = 0;
 
-  $: count = `${i + 1} of ${countingLibrary.length}`;
+  $: count = `${i + 1} of ${orderedList.length}`;
 
   function isPastDue(category, lastCounted) {
     let days = 0
@@ -20,12 +20,13 @@
     return diff > days 
   }
 
-  let countingLibrary = $inventoryLibrary.filter((item) => {
+  let currentList = $inventoryLibrary.filter((item) => {
     const {category, lastCounted} = item
     if (isPastDue(category, lastCounted)) return item;
   });
 
-
+  let orderedList = currentList.sort((a, b) => a.category.localeCompare(b.category))
+  
   async function getQoh(id) {
     const res = await fetch(`/api/getQOH?id=${id}`);
     const qoh = await res.json();
@@ -33,13 +34,13 @@
   }
 
   async function updateDate() {
-    const { airtableId } = countingLibrary[i];
+    const { airtableId } = orderedList[i];
     await updateRecord("Supermarket", airtableId, { "Last Counted": moment() });
     return;
   }
 
   async function newAdjustment(quantity) {
-    const { description, airtableId } = countingLibrary[i];
+    const { description, airtableId } = orderedList[i];
     await newRecord("Counting", {
       Description: description,
       Supermarket: [airtableId],
@@ -48,7 +49,7 @@
   }
 
   async function handleSubmit(e) {
-    const { airtableId, description } = countingLibrary[i];
+    const { airtableId, description } = orderedList[i];
     const qoh = await getQoh(airtableId);
     const count = e.detail.quantity;
     const adjustment = count - qoh;
@@ -61,16 +62,16 @@
 </script>
 
 <div class="flex my-6">
-  {#if i < countingLibrary.length}
+  {#if i < orderedList.length}
     <Form
-      item={countingLibrary[i]}
+      item={orderedList[i]}
       title="Cycle Count"
       {count}
       on:message={handleSubmit}
     />
   {/if}
-  {#if i === countingLibrary.length}
-    <div class=" flex-1 w-full text-center">Cycle count complete!</div>
+  {#if i === orderedList.length}
+    <div class="flex-1">Cycle count complete!</div>
   {/if}
   <Log logs={$counting_log} />
 </div>
