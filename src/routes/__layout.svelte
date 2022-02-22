@@ -29,8 +29,8 @@
 
 
 </script>
-<div class="bg-gray-100 h-screen flex">
-  <div class = "bg-white shadow max-w-screen-xl m-auto ">
+<div class="bg-gray-100 h-screen flex py-16">
+  <div class = "bg-white shadow max-w-screen-xl m-auto min-h-full">
     <Nav />
     <slot />
   </div>

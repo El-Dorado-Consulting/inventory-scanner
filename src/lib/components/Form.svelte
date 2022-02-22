@@ -12,6 +12,7 @@
 
 function updateQuantity() {
   dispatch('message', {quantity});
+  quantity = null
 }
 
 </script>

@@ -1,8 +1,8 @@
 import Airtable from 'airtable'
 
 // Unagi Production
-const apiKey = 'keyyKoLrS4fQAkhML'
-const baseID = 'appaXW95iIHcAeyWW'
+// const apiKey = 'keyyKoLrS4fQAkhML'
+// const baseID = 'appaXW95iIHcAeyWW'
 
 //DEV
 const apiKey = 'keyVZp2ocQihZwVe2'
