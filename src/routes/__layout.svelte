@@ -4,8 +4,8 @@
   export async function load ({fetch}) {
     const res = await fetch("/api/getInventory")
     const inventoryList = await res.json()
-    //const res2 = await fetch("/api/getConfig")
-    //const configList = await res2.json()
+    const res2 = await fetch("/api/getConfig")
+    const configList = await res2.json()
     return {
       props:{
         // configList,
@@ -24,7 +24,7 @@
   export let inventoryList
   export let configList
   inventoryLibrary.update(n => {return inventoryList})
-  //config.update(n => {return configList})
+  config.update(n => {return configList})
 
 
 
