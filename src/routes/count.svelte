@@ -51,7 +51,9 @@
   async function handleSubmit(e) {
     const { airtableId, description } = orderedList[i];
     const qoh = await getQoh(airtableId);
+    console.log('event', e)
     const count = e.detail.quantity;
+    console.log(count)
     const adjustment = count - qoh;
     console.log(adjustment, count, qoh);
     const record = await newAdjustment(adjustment);
