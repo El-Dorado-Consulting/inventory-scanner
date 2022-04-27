@@ -3,7 +3,7 @@ import { base } from '$lib/data/airtable.js'
 export async function get() {
   let array = []
   try {
-    const records = await base('Supermarket').select({ view: 'default' }).all()
+    const records = await base('Supermarket').select({ view: 'scanner' }).all()
     records.map((record) => {
       array.push({
         airtableId: record.id,
