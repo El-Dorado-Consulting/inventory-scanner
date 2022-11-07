@@ -14,7 +14,7 @@
   function isPastDue(category, lastCounted) {
     let days = 0
     if (category === 'A') {days = 7}
-    if (category === 'B') {days = 30}
+    if (category === 'B') {days = 14}
     if (category === 'C') {days = 30}
     let diff = moment().diff(moment(lastCounted), "days");
     return diff > days 
@@ -26,6 +26,7 @@
   });
 
   let orderedList = currentList.sort((a, b) => a.category.localeCompare(b.category))
+  console.log(orderedList)
   
   async function getQoh(id) {
     const res = await fetch(`/api/getQOH?id=${id}`);
