@@ -12,22 +12,48 @@
   $: count = `${i + 1} of ${orderedList.length}`;
 
   function isPastDue(category, lastCounted) {
-    let days = 0
-    if (category === 'A') {days = 7}
-    if (category === 'B') {days = 14}
-    if (category === 'C') {days = 30}
+    let days = 0;
+    if (category === "A") {
+      days = 7;
+    }
+    if (category === "B") {
+      days = 14;
+    }
+    if (category === "C") {
+      days = 30;
+    }
     let diff = moment().diff(moment(lastCounted), "days");
-    return diff > days 
+    return diff > days;
   }
 
+function orderObjectsByCategory(objects) {
+  objects.sort(function(a, b) {
+    var categoryA = a.category;
+    var categoryB = b.category;
+    
+    if (categoryA < categoryB) {
+      return -1;
+    }
+    if (categoryA > categoryB) {
+      return 1;
+    }
+    return 0;
+  });
+  
+  return objects;
+}
+
   let currentList = $inventoryLibrary.filter((item) => {
-    const {category, lastCounted} = item
+    const { category, lastCounted } = item;
     if (isPastDue(category, lastCounted)) return item;
   });
 
-  let orderedList = currentList.sort((a, b) => a.category.localeCompare(b.category))
-  console.log(orderedList)
-  
+  console.log("currentList", currentList);
+
+  let orderedList = orderObjectsByCategory(currentList);
+
+  console.log("ordered list", orderedList);
+
   async function getQoh(id) {
     const res = await fetch(`/api/getQOH?id=${id}`);
     const qoh = await res.json();
@@ -52,9 +78,9 @@
   async function handleSubmit(e) {
     const { airtableId, description } = orderedList[i];
     const qoh = await getQoh(airtableId);
-    console.log('event', e)
+    console.log("event", e);
     const count = e.detail.quantity;
-    console.log(count)
+    console.log(count);
     const adjustment = count - qoh;
     console.log(adjustment, count, qoh);
     const record = await newAdjustment(adjustment);
